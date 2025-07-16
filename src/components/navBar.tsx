@@ -15,7 +15,7 @@ import {
   Accordion,
   AccordionContent,
   AccordionItem,
- AccordionTrigger,
+  AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import {
@@ -149,51 +149,51 @@ const Navbar = ({
   },
 }: NavbarProps) => {
   return (
-    <section className="py-4 bg-background w-full">
+    <section className="sticky top-0 z-50 py-4 bg-background w-full shadow-sm">
       <div className="w-full px-4 lg:px-8">
         {/* Desktop Menu */}
-        <nav className="relative hidden items-center lg:flex w-full">
-  {/* Logo (Left) */}
-  <div className="absolute left-0 flex items-center gap-2">
-    <a href={logo.url} className="flex items-center gap-2">
-      <Image
-        src={logo.src}
-        alt={logo.alt}
-        width={40}
-        height={40}
-        className="h-10 w-auto"
-      />
-      <span className="text-lg font-semibold tracking-tight">{logo.title}</span>
-    </a>
-  </div>
+        <nav className="hidden lg:flex w-full items-center justify-between">
+          {/* Left: Logo */}
+          <div className="flex items-center gap-2">
+            <a href={logo.url} className="flex items-center gap-2">
+              <Image
+                src={logo.src}
+                alt={logo.alt}
+                width={40}
+                height={40}
+                className="h-10 w-auto"
+              />
+              <span className="text-lg font-semibold tracking-tight">
+                {logo.title}
+              </span>
+            </a>
+          </div>
 
-  {/* Navigation Menu (Center) */}
-  <div className="absolute left-1/2 -translate-x-1/2">
-    <NavigationMenu viewport={false}>
-      <NavigationMenuList>
-        {menu.map((item) => renderMenuItem(item))}
-      </NavigationMenuList>
-    </NavigationMenu>
-  </div>
+          {/* Center: Navigation Menu */}
+          <NavigationMenu>
+            <NavigationMenuList className="flex gap-2">
+              {menu.map((item) => renderMenuItem(item))}
+            </NavigationMenuList>
+          </NavigationMenu>
 
-  {/* Auth Buttons (Right) */}
-  <div className="ml-auto flex gap-2">
-    <Button asChild size="sm">
-      <a href={auth.login.url}>{auth.login.title}</a>
-    </Button>
-  </div>
-</nav>
+          {/* Right: Auth Buttons */}
+          <div className="flex gap-2">
+            <Button asChild size="sm">
+              <a href={auth.login.url}>{auth.login.title}</a>
+            </Button>
+          </div>
+        </nav>
 
         {/* Mobile Menu */}
         <div className="flex justify-between items-center lg:hidden">
           <a href={logo.url} className="flex items-center gap-2">
-          <Image
-  src={logo.src}
-  alt={logo.alt}
-  width={40}
-  height={40}
-  className="h-10 w-auto"
-/>
+            <Image
+              src={logo.src}
+              alt={logo.alt}
+              width={40}
+              height={40}
+              className="h-10 w-auto"
+            />
           </a>
           <Sheet>
             <SheetTrigger asChild>
@@ -205,19 +205,23 @@ const Navbar = ({
               <SheetHeader>
                 <SheetTitle>
                   <a href={logo.url} className="flex items-center gap-2">
-                  <Image
-  src={logo.src}
-  alt={logo.alt}
-  width={32}
-  height={32}
-  className="h-8 w-auto"
-/>
+                    <Image
+                      src={logo.src}
+                      alt={logo.alt}
+                      width={32}
+                      height={32}
+                      className="h-8 w-auto"
+                    />
                     <span className="font-bold">{logo.title}</span>
                   </a>
                 </SheetTitle>
               </SheetHeader>
               <div className="flex flex-col gap-6 p-4">
-                <Accordion type="single" collapsible className="flex flex-col gap-4">
+                <Accordion
+                  type="single"
+                  collapsible
+                  className="facial flex-col gap-4"
+                >
                   {menu.map((item) => renderMobileMenuItem(item))}
                 </Accordion>
                 <div className="flex flex-col gap-3">
@@ -237,7 +241,7 @@ const Navbar = ({
 const renderMenuItem = (item: MenuItem) => {
   if (item.items) {
     return (
-      <NavigationMenuItem key={item.title}>
+      <NavigationMenuItem key={item.title} className="relative">
         <NavigationMenuTrigger>{item.title}</NavigationMenuTrigger>
         <NavigationMenuContent>
           <div className="flex flex-col gap-2 min-w-[320px] p-2">
