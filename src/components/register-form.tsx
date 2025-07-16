@@ -1,16 +1,55 @@
+'use client'
+
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-
-//TODO: Supabase auth
+import { createClient } from "@/lib/supabase/client"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
 
 export function RegisterForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
+  const [supabase] = useState(() => createClient())
+  const router = useRouter()
+
+  async function handleRegister(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+
+    const form = e.currentTarget
+    const fullName = (form.fullName as HTMLInputElement).value
+    const email = (form.email as HTMLInputElement).value
+    const password = (form.password as HTMLInputElement).value
+    const confirmPassword = (form.confirmPassword as HTMLInputElement).value
+
+    if (password !== confirmPassword) {
+      alert("Mật khẩu xác nhận không khớp!")
+      return
+    }
+
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          full_name: fullName,
+        },
+        emailRedirectTo: `${location.origin}/auth/callback`,
+      },
+    })
+
+    if (error) {
+      alert(error.message)
+    } else {
+      alert("Vui lòng kiểm tra email để xác nhận tài khoản!")
+      router.push("/login")
+    }
+  }
+
   return (
-    <form className={cn("flex flex-col gap-6", className)} {...props}>
+    <form onSubmit={handleRegister} className={cn("flex flex-col gap-6", className)} {...props}>
       <div className="flex flex-col items-center gap-2 text-center">
         <h1 className="text-2xl font-bold">Đăng Ký</h1>
         <p className="text-muted-foreground text-sm text-balance">
@@ -42,16 +81,29 @@ export function RegisterForm({
             Hoặc đăng ký bằng
           </span>
         </div>
-        <Button variant="outline" className="w-full">
+        <Button
+          variant="outline"
+          type="button"
+          onClick={async () => {
+            const { error } = await supabase.auth.signInWithOAuth({
+              provider: 'google',
+              options: {
+                redirectTo: `${location.origin}/auth/callback`,
+              },
+            })
+            if (error) alert(error.message)
+          }}
+          className="w-full"
+        >
           Đăng ký với Google
         </Button>
       </div>
       <div className="text-center text-sm">
         Đã có tài khoản?{" "}
-        <a href="/login" className="underline underline-offset-4">
+        <a href="/auth/login" className="underline underline-offset-4">
           Đăng nhập ngay!
         </a>
       </div>
     </form>
   )
-} 
+}

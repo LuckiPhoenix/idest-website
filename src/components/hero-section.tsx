@@ -35,7 +35,7 @@ export function HeroSection() {
           size="lg"
           className="bg-red-500 hover:bg-red-600 text-white px-8 py-4 text-lg font-semibold rounded-lg shadow-lg"
         >
-          <a href="/register" >
+          <a href="/auth/register" >
             Đăng ký miễn phí ngay
           </a>
         </Button>

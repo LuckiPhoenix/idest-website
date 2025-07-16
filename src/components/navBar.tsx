@@ -145,7 +145,7 @@ const Navbar = ({
     },
   ],
   auth = {
-    login: { title: "Đăng Nhập", url: "/login" },
+    login: { title: "Đăng Nhập", url: "auth/login" },
   },
 }: NavbarProps) => {
   return (
