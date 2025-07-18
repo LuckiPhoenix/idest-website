@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { createClient } from "@/lib/supabase/client"
+import { toast } from "sonner"
+import Image from "next/image"
 
 export function LoginForm({
   className,
@@ -16,6 +18,7 @@ export function LoginForm({
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
+  const [googleLoading, setGoogleLoading] = useState(false)
   const router = useRouter()
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -27,16 +30,23 @@ export function LoginForm({
       password,
     })
 
+
     setLoading(false)
 
     if (error) {
-      alert(error.message)
+      toast(
+        "Lỗi đăng nhập", {
+          description: error.message
+        }
+      )
     } else {
-      router.push('/')
+      router.push("/")
     }
   }
 
   const handleGoogleLogin = async () => {
+    setGoogleLoading(true)
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
@@ -44,16 +54,30 @@ export function LoginForm({
       },
     })
 
-    if (error) alert(error.message)
+    setGoogleLoading(false)
+
+    if (error) {
+      toast(
+        "Lỗi khi đăng nhập với Google",
+        {
+          description: error.message
+        }
+      )
+    }
   }
 
   return (
-    <form onSubmit={handleLogin} className={cn("flex flex-col gap-6", className)} {...props}>
+    <form
+      onSubmit={handleLogin}
+      className={cn("flex flex-col gap-6", className)}
+      {...props}
+    >
       <div className="flex flex-col items-center gap-2 text-center">
         <h1 className="text-2xl font-bold">Đăng Nhập</h1>
         <p className="text-muted-foreground text-sm text-balance">
           Hãy nhập email và mật khẩu để xác thực
         </p>
+      
       </div>
       <div className="grid gap-6">
         <div className="grid gap-3">
@@ -61,9 +85,10 @@ export function LoginForm({
           <Input
             id="email"
             type="email"
-            placeholder="nguyenvana@example.com"
+            placeholder="NguyenVanA@example.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            disabled={loading || googleLoading}
             required
           />
         </div>
@@ -82,10 +107,11 @@ export function LoginForm({
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            disabled={loading || googleLoading}
             required
           />
         </div>
-        <Button type="submit" className="w-full" disabled={loading}>
+        <Button type="submit" className="w-full" disabled={loading || googleLoading}>
           {loading ? "Đang đăng nhập..." : "Đăng nhập"}
         </Button>
         <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
@@ -95,11 +121,25 @@ export function LoginForm({
         </div>
         <Button
           variant="outline"
-          className="w-full"
+          className="w-full cursor-pointer"
           type="button"
           onClick={handleGoogleLogin}
+          disabled={googleLoading || loading}
         >
-          Đăng nhập với Google
+          {googleLoading ? (
+            "Đang chuyển hướng..."
+          ) : (
+            <>
+              <Image
+                src="/googleIcon.webp"
+                alt="Google"
+                width={20}
+                height={20}
+                className="mr-2"
+              />
+              Đăng nhập với Google
+            </>
+          )}
         </Button>
       </div>
       <div className="text-center text-sm">

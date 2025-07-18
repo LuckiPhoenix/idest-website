@@ -106,7 +106,6 @@ function PracticeCardComponent({ card }: { card: PracticeCard }) {
         >
           <Play className="w-4 h-4 fill-current" />
           Làm bài
-          <ChevronDown className="w-4 h-4" />
         </Button>
       </CardContent>
     </Card>

@@ -63,11 +63,9 @@ export function Footer() {
 
             {/* Address */}
             <div className="space-y-2">
-              <h4 className="font-semibold text-lg">Địa chỉ</h4>
+              <h4 className="font-semibold text-lg">Liên Hệ</h4>
               <p className="text-gray-300">
-                Khu phố 34, phường Linh Xuân
-                <br />
-                HCMC, VN
+                <a href="mailto:Huynhchihen2005@gmail.com">Huynhchihen2005@gmail.com</a>
               </p>
             </div>
 

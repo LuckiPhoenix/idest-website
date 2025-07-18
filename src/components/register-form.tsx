@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label"
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
+import Image from "next/image"
 
 export function RegisterForm({
   className,
@@ -95,6 +96,7 @@ export function RegisterForm({
           }}
           className="w-full"
         >
+          <Image src="/googleIcon.webp" alt="Google" width={20} height={20} className="mr-2" />
           Đăng ký với Google
         </Button>
       </div>
