@@ -8,7 +8,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        'be-vietnam-pro': ['var(--font-be-vietnam-pro)', 'sans-serif'],
+        inter: ['var(--font-inter)', 'sans-serif'],
       },
       animation: {
         'pulse': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',

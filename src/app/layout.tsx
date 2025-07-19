@@ -1,23 +1,12 @@
-import type React from "react"
 import type { Metadata } from "next"
-import { Geist, Geist_Mono, Be_Vietnam_Pro } from "next/font/google"
+import { Inter } from "next/font/google"
 import "./globals.css"
 import { Toaster } from "@/components/ui/sonner"
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
-})
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-})
-
-const beVietnamPro = Be_Vietnam_Pro({
-  variable: "--font-be-vietnam-pro",
-  subsets: ["latin", "vietnamese"],
-  weight: ["400", "500", "600", "700", "800", "900"],
+  display: "swap",
 })
 
 export const metadata: Metadata = {
@@ -31,11 +20,13 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="vi">
-      <body className={`${geistSans.variable} ${geistMono.variable} ${beVietnamPro.variable} antialiased`}>
+    <html lang="vi" className={inter.variable}>
+      <body className="font-inter antialiased">
         {children}
         <Toaster />
       </body>
     </html>
   )
 }
+
+// TODO: DARKMODE
