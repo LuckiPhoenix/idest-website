@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react"
 import { Navbar } from "@/components/navBar"
-import { HeroSection } from "@/components/hero-section"
-import { RegistrationSection } from "@/components/registration-section"
-import { IELTSOnlineTestSection } from "@/components/ielts-online-test-section"
-import { IELTSPracticeSection } from "@/components/ielts-practice-section"
-import { Footer } from "@/components/footer"
-import { CoursesSection } from "@/components/courses-section"
+import { HeroSection } from "@/components/landing/hero-section"
+import { RegistrationSection } from "@/components/landing/registration-section"
+import { IELTSOnlineTestSection } from "@/components/landing/ielts-online-test-section"
+import { IELTSPracticeSection } from "@/components/landing/ielts-practice-section"
+import { Footer } from "@/components/landing/footer"
+import { CoursesSection } from "@/components/landing/courses-section"
 import { createClient } from "@/lib/supabase/client"
 import type { User } from '@supabase/supabase-js'
 
