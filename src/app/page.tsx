@@ -9,17 +9,22 @@ import { IELTSPracticeSection } from "@/components/landing/ielts-practice-sectio
 import { Footer } from "@/components/landing/footer"
 import { CoursesSection } from "@/components/landing/courses-section"
 import { createClient } from "@/lib/supabase/client"
-import type { User } from '@supabase/supabase-js'
+import type { Session, User } from '@supabase/supabase-js'
+
 
 
 export default function Home() {
   const [supabase] = useState(() => createClient())
   const [user, setUser] = useState<User | null>(null)
+  const [session, setSession] = useState<Session | null>(null) 
   useEffect(() => {
     const fetchUser = async () => {
       const { data: { user } } = await supabase.auth.getUser()
+      const { data: { session } } = await supabase.auth.getSession()
       setUser(user)
+      setSession(session)
       console.log("XXXXXXXXX👤 User:", user)
+      console.log("XXXXX session:", session)
     }
 
     fetchUser()
@@ -28,7 +33,8 @@ export default function Home() {
   return (
     <main className="w-full min-w-full bg-gray-50">
       <p>User: {user?.email}</p>
-      <button className="bg-red-500 text-white px-4 py-2 z-50 rounded-md" onClick={() => supabase.auth.signOut()}>Sign Out</button>
+      <p>JWT: {session?.access_token}</p>
+      <button className="z-50 px-4 py-2 text-white bg-red-500 rounded-md" onClick={() => supabase.auth.signOut()}>Sign Out</button>
       <Navbar />
       <HeroSection />
       <RegistrationSection />
