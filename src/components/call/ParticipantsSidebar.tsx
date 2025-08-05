@@ -1,9 +1,9 @@
 "use client"
 
 import React from 'react'
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { Avatar, AvatarFallback } from "@/shared/ui/avatar"
+import { Badge } from "@/shared/ui/badge"
+import { Button } from "@/shared/ui/button"
 import { Mic, MicOff, Video, VideoOff, Volume2, X } from 'lucide-react'
 
 interface Participant {

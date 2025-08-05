@@ -1,7 +1,7 @@
 "use client"
 
 import React from 'react'
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback } from "@/shared/ui/avatar"
 import { Plus, Monitor, Mic, MicOff, Video, VideoOff } from 'lucide-react'
 
 interface Participant {

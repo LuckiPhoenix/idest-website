@@ -2,13 +2,14 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { createClient } from "@/lib/supabase/client"
+import { cn } from "@/modules/utils"
+import { Button } from "@/shared/ui/button"
+import { Input } from "@/shared/ui/input"
+import { Label } from "@/shared/ui/label"
+import { createClient } from "@/modules/supabase/client"
 import { toast } from "sonner"
 import Image from "next/image"
+import { getUser } from "@/modules/profile/service"
 
 export function LoginForm({
   className,
@@ -25,22 +26,51 @@ export function LoginForm({
     e.preventDefault()
     setLoading(true)
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
 
+      if (error) {
+        toast(
+          "Lỗi đăng nhập", {
+            description: error.message
+          }
+        )
+        setLoading(false)
+        return
+      }
 
-    setLoading(false)
-
-    if (error) {
+      try {
+        const currentUser = await getUser();
+        if(currentUser.data.status) {
+          router.push("/")
+        } else {
+          toast(
+            "Hồ sơ không tồn tại", {
+              description: "Vui lòng đăng ký tài khoản trước khi đăng nhập."
+            }
+          )
+        }
+      } catch (apiError: unknown) {
+        console.error('API Error:', apiError)
+        
+          toast(
+            "Lỗi kết nối", {
+              description: "Không thể kết nối đến máy chủ. Vui lòng thử lại sau."
+            }
+          )
+      }
+    } catch (error: unknown) {
+      console.error('Login error:', error)
       toast(
         "Lỗi đăng nhập", {
-          description: error.message
+          description: "Đã xảy ra lỗi không mong muốn. Vui lòng thử lại."
         }
       )
-    } else {
-      router.push("/")
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -72,9 +102,9 @@ export function LoginForm({
       className={cn("flex flex-col gap-6", className)}
       {...props}
     >
-      <div className="flex flex-col items-center gap-2 text-center">
+      <div className="flex flex-col gap-2 items-center text-center">
         <h1 className="text-2xl font-bold">Đăng Nhập</h1>
-        <p className="text-muted-foreground text-sm text-balance">
+        <p className="text-sm text-muted-foreground text-balance">
           Hãy nhập email và mật khẩu để xác thực
         </p>
       
@@ -114,8 +144,8 @@ export function LoginForm({
         <Button type="submit" className="w-full" disabled={loading || googleLoading}>
           {loading ? "Đang đăng nhập..." : "Đăng nhập"}
         </Button>
-        <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
-          <span className="bg-background text-muted-foreground relative z-10 px-2">
+        <div className="relative text-sm text-center after:border-border after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
+          <span className="relative z-10 px-2 bg-background text-muted-foreground">
             Hoặc đăng nhập bằng
           </span>
         </div>
@@ -142,7 +172,7 @@ export function LoginForm({
           )}
         </Button>
       </div>
-      <div className="text-center text-sm">
+      <div className="text-sm text-center">
         Không có tài khoản?{" "}
         <a href="/auth/register" className="underline underline-offset-4">
           Đăng ký ngay!

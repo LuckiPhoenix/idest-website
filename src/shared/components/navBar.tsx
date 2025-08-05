@@ -8,6 +8,8 @@ import {
   ClipboardCheck,
   School,
   Layers,
+  LogOut,
+  User,
 } from "lucide-react";
 import Image from "next/image";
 
@@ -16,8 +18,8 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
+} from "@/shared/ui/accordion";
+import { Button } from "@/shared/ui/button";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -25,14 +27,27 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu";
+} from "@/shared/ui/navigation-menu";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet";
+} from "@/shared/ui/sheet";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/shared/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/shared/ui/dropdown-menu";
+import { useProfile } from "@/shared/hooks/useProfile";
 
 interface MenuItem {
   title: string;
@@ -146,22 +161,24 @@ const Navbar = ({
   ],
   auth = {
     login: { title: "Đăng Nhập", url: "auth/login" },
-  },
+  }
 }: NavbarProps) => {
+  const { user, isAuthenticated, isLoading, logout } = useProfile();
+
   return (
-    <section className="sticky top-0 z-50 py-4 bg-background w-full shadow-sm">
-      <div className="w-full px-4 lg:px-8">
+    <section className="sticky top-0 z-50 py-4 w-full shadow-sm bg-background">
+      <div className="px-4 w-full lg:px-8">
         {/* Desktop Menu */}
-        <nav className="hidden lg:flex w-full items-center justify-between">
+        <nav className="hidden justify-between items-center w-full lg:flex">
           {/* Left: Logo */}
-          <div className="flex items-center gap-2">
-            <a href={logo.url} className="flex items-center gap-2">
+          <div className="flex gap-2 items-center">
+            <a href={logo.url} className="flex gap-2 items-center">
               <Image
                 src={logo.src}
                 alt={logo.alt}
                 width={40}
                 height={40}
-                className="h-10 w-auto"
+                className="w-auto h-10"
               />
               <span className="text-lg font-semibold tracking-tight">
                 {logo.title}
@@ -176,26 +193,85 @@ const Navbar = ({
             </NavigationMenuList>
           </NavigationMenu>
 
-          {/* Right: Auth Buttons */}
-          <div className="flex gap-2">
-            <Button asChild size="sm">
-              <a href={auth.login.url}>{auth.login.title}</a>
-            </Button>
+          {/* Right: Auth Section */}
+          <div className="flex gap-2 items-center">
+            {isLoading ? (
+              <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse" />
+            ) : isAuthenticated && user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative w-8 h-8 rounded-full">
+                    <Avatar className="w-8 h-8">
+                      <AvatarImage 
+                        src={user.avatar_url || "/fallback.jpg"} 
+                        alt={user.full_name}
+                      />
+                      <AvatarFallback className="bg-primary text-primary-foreground">
+                        {user.full_name.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end" forceMount>
+                  <div className="flex gap-2 justify-start items-center p-2">
+                    <div className="flex flex-col space-y-1 leading-none">
+                      {user.full_name && (
+                        <p className="font-medium">{user.full_name}</p>
+                      )}
+                      {user.email && (
+                        <p className="w-[200px] truncate text-sm text-muted-foreground">
+                          {user.email}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <User className="mr-2 w-4 h-4" />
+                    <span>Hồ sơ</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem 
+                    variant="destructive"
+                    onClick={logout}
+                  >
+                    <LogOut className="mr-2 w-4 h-4" />
+                    <span>Đăng xuất</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button asChild size="sm">
+                <a href={auth.login.url}>{auth.login.title}</a>
+              </Button>
+            )}
           </div>
         </nav>
 
         {/* Mobile Menu */}
         <div className="flex justify-between items-center lg:hidden">
-          <a href={logo.url} className="flex items-center gap-2">
+          <a href={logo.url} className="flex gap-2 items-center">
             <Image
               src={logo.src}
               alt={logo.alt}
               width={40}
               height={40}
-              className="h-10 w-auto"
+              className="w-auto h-10"
             />
           </a>
-          <Sheet>
+          <div className="flex gap-2 items-center">
+            {isAuthenticated && user && (
+              <Avatar className="w-8 h-8">
+                <AvatarImage 
+                  src={user.avatar_url || "/fallback.jpg"} 
+                  alt={user.full_name}
+                />
+                <AvatarFallback className="bg-primary text-primary-foreground">
+                  {user.full_name.charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+            )}
+            <Sheet>
             <SheetTrigger asChild>
               <Button variant="outline" size="icon">
                 <Menu className="size-4" />
@@ -204,13 +280,13 @@ const Navbar = ({
             <SheetContent className="overflow-y-auto">
               <SheetHeader>
                 <SheetTitle>
-                  <a href={logo.url} className="flex items-center gap-2">
+                  <a href={logo.url} className="flex gap-2 items-center">
                     <Image
                       src={logo.src}
                       alt={logo.alt}
                       width={32}
                       height={32}
-                      className="h-8 w-auto"
+                      className="w-auto h-8"
                     />
                     <span className="font-bold">{logo.title}</span>
                   </a>
@@ -220,18 +296,51 @@ const Navbar = ({
                 <Accordion
                   type="single"
                   collapsible
-                  className="facial flex-col gap-4"
+                  className="flex-col gap-4 facial"
                 >
                   {menu.map((item) => renderMobileMenuItem(item))}
                 </Accordion>
                 <div className="flex flex-col gap-3">
-                  <Button asChild variant="outline">
-                    <a href={auth.login.url}>{auth.login.title}</a>
-                  </Button>
+                  {isAuthenticated && user ? (
+                    <>
+                      <div className="flex gap-3 items-center p-3 rounded-lg bg-muted">
+                        <Avatar className="w-10 h-10">
+                          <AvatarImage 
+                            src={user.avatar_url || "/fallback.jpg"} 
+                            alt={user.full_name}
+                          />
+                          <AvatarFallback className="bg-primary text-primary-foreground">
+                            {user.full_name.charAt(0).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex flex-col space-y-1">
+                          <p className="text-sm font-medium leading-none">{user.full_name}</p>
+                          <p className="text-xs text-muted-foreground">{user.email}</p>
+                        </div>
+                      </div>
+                      <Button variant="outline" className="justify-start">
+                        <User className="mr-2 w-4 h-4" />
+                        Hồ sơ
+                      </Button>
+                      <Button 
+                        variant="destructive" 
+                        className="justify-start"
+                        onClick={logout}
+                      >
+                        <LogOut className="mr-2 w-4 h-4" />
+                        Đăng xuất
+                      </Button>
+                    </>
+                  ) : (
+                    <Button asChild variant="outline">
+                      <a href={auth.login.url}>{auth.login.title}</a>
+                    </Button>
+                  )}
                 </div>
               </div>
             </SheetContent>
           </Sheet>
+          </div>
         </div>
       </div>
     </section>
@@ -260,7 +369,7 @@ const renderMenuItem = (item: MenuItem) => {
     <NavigationMenuItem key={item.title}>
       <NavigationMenuLink
         href={item.url}
-        className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-muted hover:text-accent-foreground"
+        className="inline-flex justify-center items-center px-4 py-2 w-max h-10 text-sm font-medium rounded-md transition-colors group bg-background hover:bg-muted hover:text-accent-foreground"
       >
         {item.title}
       </NavigationMenuLink>
@@ -272,7 +381,7 @@ const renderMobileMenuItem = (item: MenuItem) => {
   if (item.items) {
     return (
       <AccordionItem key={item.title} value={item.title} className="border-b-0">
-        <AccordionTrigger className="text-md py-0 font-semibold hover:no-underline">
+        <AccordionTrigger className="py-0 font-semibold text-md hover:no-underline">
           {item.title}
         </AccordionTrigger>
         <AccordionContent className="mt-2">
@@ -285,7 +394,7 @@ const renderMobileMenuItem = (item: MenuItem) => {
   }
 
   return (
-    <a key={item.title} href={item.url} className="text-md font-semibold">
+    <a key={item.title} href={item.url} className="font-semibold text-md">
       {item.title}
     </a>
   );
@@ -295,7 +404,7 @@ const SubMenuLink = ({ item }: { item: MenuItem }) => {
   return (
     <a
       href={item.url}
-      className="flex items-start gap-3 rounded-md p-3 transition-colors hover:bg-muted"
+      className="flex gap-3 items-start p-3 rounded-md transition-colors hover:bg-muted"
     >
       <div className="text-foreground">{item.icon}</div>
       <div className="flex flex-col">

@@ -1,8 +1,8 @@
 "use client"
 
 import React, { useRef, useState, useEffect } from 'react'
-import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
+import { Button } from "@/shared/ui/button"
+import { Separator } from "@/shared/ui/separator"
 import { PenTool, Type, Image, Eraser, X, ChevronDown } from 'lucide-react'
 
 interface WhiteboardTool {
