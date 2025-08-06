@@ -1,3 +1,5 @@
+import { StudentProfile, TeacherProfile } from "@/modules/profile/types";
+
 export interface User {
   id: string;
   full_name: string;
@@ -7,6 +9,8 @@ export interface User {
   is_active: boolean;
   created_at: string;
   updated_at: string;
+  StudentProfile?: StudentProfile
+  TeacherProfile?: TeacherProfile
 }
 
 export interface ProfileResponse {

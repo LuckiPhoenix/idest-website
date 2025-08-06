@@ -100,7 +100,7 @@ const Navbar = ({
           title: "Các Khóa Học Của Tôi",
           description: "Xem các khóa bạn đã đăng ký và đang học",
           icon: <Zap className="size-5 shrink-0" />,
-          url: "#",
+          url: "/courses",
         },
       ],
     },
