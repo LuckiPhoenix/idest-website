@@ -57,6 +57,7 @@ export function useProfile() {
   }
 
   const hasStudentProfile = user?.StudentProfile != null
+  console.log("hasStudentProfile", user?.StudentProfile)
 
   return {
     user,

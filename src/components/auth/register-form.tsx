@@ -10,7 +10,7 @@ import { useState } from "react"
 import Image from "next/image"
 import { registerUserWithSupabase } from "@/modules/profile/service"
 import { Role } from "@/shared/types/role.enum"
-import { CreateUserDto } from "@/apis/modules/profile/createUser.dto"
+import { CreateUserDto } from "@/modules/profile/createUser.dto"
 import { toast } from "sonner"
 
 export function RegisterForm({
@@ -69,7 +69,7 @@ export function RegisterForm({
         try {
           const user: CreateUserDto = {
             fullName: fullName,
-            role: Role.Student,
+            role: Role.STUDENT,
             avatar: null,
           }
           await registerUserWithSupabase(user)
@@ -103,9 +103,9 @@ export function RegisterForm({
 
   return (
     <form onSubmit={handleRegister} className={cn("flex flex-col gap-6", className)} {...props}>
-      <div className="flex flex-col items-center gap-2 text-center">
+      <div className="flex flex-col gap-2 items-center text-center">
         <h1 className="text-2xl font-bold">Đăng Ký</h1>
-        <p className="text-muted-foreground text-sm text-balance">
+        <p className="text-sm text-muted-foreground text-balance">
           Tạo tài khoản để bắt đầu học IELTS
         </p>
       </div>
@@ -129,8 +129,8 @@ export function RegisterForm({
         <Button type="submit" className="w-full" disabled={loading || googleLoading}>
           {loading ? "Đang đăng ký..." : "Đăng ký"}
         </Button>
-        <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
-          <span className="bg-background text-muted-foreground relative z-10 px-2">
+        <div className="relative text-sm text-center after:border-border after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
+          <span className="relative z-10 px-2 bg-background text-muted-foreground">
             Hoặc đăng ký bằng
           </span>
         </div>
@@ -171,7 +171,7 @@ export function RegisterForm({
           )}
         </Button>
       </div>
-      <div className="text-center text-sm">
+      <div className="text-sm text-center">
         Đã có tài khoản?{" "}
         <a href="/auth/login" className="underline underline-offset-4">
           Đăng nhập ngay!

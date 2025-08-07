@@ -7,33 +7,37 @@ import { Input } from '@/shared/ui/input'
 import { Label } from '@/shared/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select'
 import { ArrowLeft } from 'lucide-react'
+import { createStudentProfile } from '@/modules/profile/service'
+import { useRouter } from 'next/navigation'
 
 export default function CreateStudentProfilePage() {
+  const router = useRouter()
   const [targetScore, setTargetScore] = React.useState<string>('')
   const [currentLevel, setCurrentLevel] = React.useState<string>('')
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // TODO: Implement student profile creation
-    console.log('Creating student profile:', { targetScore, currentLevel })
+    await createStudentProfile({ target_score: Number(targetScore), current_level: currentLevel })
+    router.push('/')
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+    <div className="flex justify-center items-center p-4 min-h-screen bg-gray-50">
       <div className="w-full max-w-md">
-        <div className="mb-6">
+        <div className="mb-6">  
           <Button variant="ghost" className="mb-4" asChild>
-            <a href="/dashboard" className="flex items-center gap-2">
+            {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+            <a href="/" className="flex gap-2 items-center">
               <ArrowLeft className="w-4 h-4" />
-              Back to Dashboard
-            </a>
+              <p>Back to Home</p>
+            </a>  
           </Button>
         </div>
         
         <Card>
           <CardHeader>
             <CardTitle className="text-center">Create Student Profile</CardTitle>
-            <p className="text-sm text-gray-600 text-center">
+            <p className="text-sm text-center text-gray-600">
               Complete your profile to access personalized learning features
             </p>
           </CardHeader>

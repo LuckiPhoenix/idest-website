@@ -80,7 +80,7 @@ interface NavbarProps {
 const Navbar = ({
   logo = {
     url: "/",
-    src: "/logo.jpg",
+    src: "/logo.png",
     alt: "logo",
     title: "Idest",
   },

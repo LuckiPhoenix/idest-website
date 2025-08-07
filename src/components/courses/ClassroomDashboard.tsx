@@ -111,12 +111,12 @@ const StudentProfileBanner: React.FC<{ onDismiss: () => void }> = ({ onDismiss }
 
 export const ClassroomDashboard: React.FC = () => {
   const { classrooms, isLoading } = useClassrooms()
-  const { user, hasStudentProfile, isAuthenticated } = useProfile()
+  const { user, hasStudentProfile, isAuthenticated, isLoading: isProfileLoading } = useProfile()
   const [selectedDate, setSelectedDate] = React.useState<Date | undefined>(new Date())
   const [bannerDismissed, setBannerDismissed] = React.useState(false)
 
   const canCreateClass = user && (user.role === Role.TEACHER || user.role === Role.ADMIN)
-  const shouldShowBanner = isAuthenticated && !hasStudentProfile && !bannerDismissed
+  const shouldShowBanner = isAuthenticated && !hasStudentProfile && !bannerDismissed && !isProfileLoading
 
   return (
     <div className="p-4 pt-6 min-h-screen bg-gray-50">

@@ -13,7 +13,7 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 
 export default function Home() {
-  const { user, isLoading, error, isAuthenticated } = useProfile()
+  const { user, isLoading, error, isAuthenticated, hasStudentProfile } = useProfile()
   const supabase = createClient()
   const [showDebug, setShowDebug] = useState(true)
   const [jwt, setJwt] = useState<string | null>(null)
@@ -41,11 +41,11 @@ export default function Home() {
           <p>Is Active: {user.is_active ? "Yes" : "No"}</p>
           <p>Created At: {user.created_at}</p>
           <p>Updated At: {user.updated_at}</p>
-          <p>is student or teacher: {user.StudentProfile ? "Student" : user.TeacherProfile ? "Teacher" : "None"}</p>
+          <p>have student or teacher: {hasStudentProfile ? "STUDENT" : user.TeacherProfile ? "TEACHER" : "None"}</p>
           <p className="overflow-hidden max-w-full break-all">JWT: {jwt || "No JWT"}</p>
           <p>Is Authenticated: {isAuthenticated ? "Yes" : "No"}</p>
           <p>Error: {error ? error : "No error"}</p>
-          <Link className="text-lg font-bold text-blue-500" href="/dashboard">Go to dashboard</Link>
+          <Link className="text-lg font-bold text-blue-500" href="/admin/dashboard">Go to dashboard</Link>
         </>
       ) : (
         <p>Could not load user info.</p>
