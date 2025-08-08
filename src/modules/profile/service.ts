@@ -2,6 +2,7 @@ import { CreateUserDto } from './createUser.dto'
 import { createClient } from '@/modules/supabase/client'
 import { http } from '@/modules/http'
 import { CreateStudentProfileDto } from './dtos/createStudentProfile.dto'
+import { CreateTeacherProfileDto } from './dtos/createTeacherProfile.dto'
 
 export async function registerUserWithSupabase(user: CreateUserDto) {
   const response = await http.post('/user', user)
@@ -33,6 +34,11 @@ export async function getUserById(id: string) {
 
 export async function createStudentProfile(data: CreateStudentProfileDto) {
   const response = await http.post('/user/student-profile', data)
+  return response
+}
+
+export async function createTeacherProfile(data: CreateTeacherProfileDto) {
+  const response = await http.post('/user/teacher-profile', data)
   return response
 }
 

@@ -1,5 +1,4 @@
 import * as React from "react"
-import { GalleryVerticalEnd } from "lucide-react"
 
 import {
   Sidebar,
@@ -15,36 +14,36 @@ import {
   SidebarRail,
 } from "@/shared/ui/sidebar"
 import Link from "next/link"
+import Image from "next/image"
 
 // This is sample data.
 const data = {
   navMain: [
     {
       title: "Dashboard",
-      url: "/dashboard",
+      url: "/admin/general",
       items: [
         {
           title: "General",
-          url: "#",
+          url: "/admin/general",
         },
       ],
     },
     {
       title: "Classroom",
-      url: "#",
+      url: "/admin/classroom",
       items: [
         {
           title: "Courses",
-          url: "#",
+          url: "/admin/courses",
         },
         {
           title: "Meetings",
-          url: "#",
-          isActive: true,
+          url: "/admin/meetings",
         },
         {
           title: "Assignments",
-          url: "#",
+          url: "/admin/assignments",
         },
       ],
     },
@@ -54,15 +53,15 @@ const data = {
       items: [
         {
           title: "Teachers",
-          url: "#",
+          url: "/admin/teachers",
         },
         {
           title: "Students",
-          url: "#",
+          url: "/admin/students",
         },
         {
           title: "All Users",
-          url: "#",
+          url: "/admin/users",
         },
       ],
     },
@@ -73,19 +72,19 @@ const data = {
 
         {
           title: "Listening",
-          url: "#",
+          url: "/admin/listening",
         },
         {
           title: "Reading",
-          url: "#",
+          url: "/admin/reading",
         },
         {
           title: "Writing",
-          url: "#",
+          url: "/admin/writing",
         },
         {
           title: "Speaking",
-          url: "#",
+          url: "/admin/speaking",
         },
       ],
     },
@@ -95,14 +94,14 @@ const data = {
       items: [
         {
           title: "Feedbacks",
-          url: "#",
+          url: "/admin/feedbacks",
         },
       ],
     },
   ],
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ shouldActive, ...props }: React.ComponentProps<typeof Sidebar> & { shouldActive: string }) {
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -110,9 +109,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <Link href="/">
-                <div className="flex justify-center items-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground aspect-square size-8">
-                  <GalleryVerticalEnd className="size-4" />
-                </div>
+                <Image src="/logo.png" alt="Idest" width={32} height={32} />
                 <div className="flex flex-col gap-0.5 leading-none">
                   <span className="text-lg font-bold">Idest</span>
                 </div>
@@ -135,7 +132,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <SidebarMenuSub>
                     {item.items.map((item) => (
                       <SidebarMenuSubItem key={item.title}>
-                        <SidebarMenuSubButton asChild isActive={item.isActive}>
+                        <SidebarMenuSubButton asChild isActive={shouldActive === item.title}>
                           <a href={item.url}>{item.title}</a>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>

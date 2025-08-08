@@ -45,7 +45,7 @@ export default function Home() {
           <p className="overflow-hidden max-w-full break-all">JWT: {jwt || "No JWT"}</p>
           <p>Is Authenticated: {isAuthenticated ? "Yes" : "No"}</p>
           <p>Error: {error ? error : "No error"}</p>
-          <Link className="text-lg font-bold text-blue-500" href="/admin/dashboard">Go to dashboard</Link>
+          <Link className="text-lg font-bold text-blue-500" href="/admin/general">Go to dashboard</Link>
         </>
       ) : (
         <p>Could not load user info.</p>
