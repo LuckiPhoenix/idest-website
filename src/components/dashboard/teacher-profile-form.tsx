@@ -6,11 +6,12 @@ import { Label } from "@/shared/ui/label"
 import { Button } from "@/shared/ui/button"
 // removed Select in favor of checkbox multi-select
 import { SheetClose } from "@/shared/ui/sheet"
-import { createTeacherProfile } from "@/modules/profile/service"
+import { createTeacherProfile, updateUser } from "@/modules/profile/service"
 import { Specialization } from "@/shared/types/specialization.enum"
 import { toast } from "sonner"
 import Cropper from "react-easy-crop"
 import { createClient } from "@/modules/supabase/client"
+import { uploadImageAndGetPublicUrl } from "@/modules/supabase/storage"
 import NextImage from "next/image"
 import {
   Dialog,
@@ -21,6 +22,7 @@ import {
   DialogTitle,
 } from "@/shared/ui/dialog"
 import { Slider } from "@/shared/ui/slider"
+import { Role } from "@/shared/types/role.enum"
 
 export function TeacherProfileForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -135,31 +137,41 @@ export function TeacherProfileForm() {
     }
 
     try {
-      // Upload cropped avatar if present
-      let avatarUrl: string | null = null
-      if (croppedBlob) {
-        const fileNameSafeEmail = email.replace(/[^a-zA-Z0-9._-]/g, "_")
-        const path = `teachers/${fileNameSafeEmail}-${Date.now()}.jpg`
-        const { error: uploadError } = await supabase.storage.from("avatars").upload(path, croppedBlob, {
-          contentType: "image/jpeg",
-          upsert: false,
-        })
-        if (uploadError) {
-          throw new Error(uploadError.message)
-        }
-        const { data: publicData } = supabase.storage.from("avatars").getPublicUrl(path)
-        avatarUrl = publicData.publicUrl
-      }
 
-      await createTeacherProfile({
+      const newTeacher = await createTeacherProfile({
         fullName,
         email,
-        avatar: avatarUrl,
+        avatar: '',
         degree,
         specialization: specializationValue,
         bio,
       })
       toast("Teacher created", { description: "The teacher profile has been created." })
+      
+      // Upload cropped avatar if present
+      let avatarUrl: string | null = null
+      if (croppedBlob) {
+        const createdPayload = newTeacher.data?.data
+        const userId = createdPayload?.user_id
+        const path = `${userId}/avatar.jpeg`
+        avatarUrl = await uploadImageAndGetPublicUrl({
+          bucket: "avatars",
+          path,
+          file: croppedBlob,
+          contentType: "image/jpeg",
+          upsert: true, // always keep a single avatar per user
+          client: supabase,
+        })
+      }
+
+      await updateUser(newTeacher.data?.data?.user_id, {
+        fullName,
+        avatar: avatarUrl,
+        role: Role.TEACHER,
+        isActive: true,
+      })
+
+      
       form.reset()
       resetAvatar()
       setSpecializations([])

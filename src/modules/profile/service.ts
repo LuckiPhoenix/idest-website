@@ -3,6 +3,7 @@ import { createClient } from '@/modules/supabase/client'
 import { http } from '@/modules/http'
 import { CreateStudentProfileDto } from './dtos/createStudentProfile.dto'
 import { CreateTeacherProfileDto } from './dtos/createTeacherProfile.dto'
+import { UpdateUserDto } from './dtos/updateUser.dto'
 
 export async function registerUserWithSupabase(user: CreateUserDto) {
   const response = await http.post('/user', user)
@@ -42,11 +43,11 @@ export async function createTeacherProfile(data: CreateTeacherProfileDto) {
   return response
 }
 
-// export async function updateUser(id: string, data: UpdateUserDto) {
-//   try {
-//     const response = await http.put(`/user/${id}`, data)
-//     return response
-//   } catch (error: unknown) {
-//     throw error
-//   }
-// }
+export async function updateUser(id: string, data: UpdateUserDto) {
+  try {
+    const response = await http.put(`/user/${id}`, data)
+    return response
+  } catch (error: unknown) {
+    throw error
+  }
+}
