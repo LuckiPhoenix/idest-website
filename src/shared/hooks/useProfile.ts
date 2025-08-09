@@ -28,8 +28,8 @@ export function useProfile() {
         // Fetch profile data
         const profileResponse = await getUser()
         console.log("profileResponse", profileResponse)
-        if (profileResponse.data.status && profileResponse.data.data) {
-          setUser(profileResponse.data.data as UserProfile)
+        if (profileResponse.status && profileResponse.data) {
+          setUser(profileResponse.data as UserProfile)
         } else {
           setError(profileResponse.data.message || 'Failed to fetch profile')
         }

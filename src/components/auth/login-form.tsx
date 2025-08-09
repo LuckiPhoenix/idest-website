@@ -44,7 +44,7 @@ export function LoginForm({
 
       try {
         const currentUser = await getUser();
-        if(currentUser.data.status) {
+        if(currentUser.status) {
           router.push("/")
         } else {
           toast(

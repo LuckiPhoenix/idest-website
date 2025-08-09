@@ -10,6 +10,7 @@ export const http = axios.create({
   },
 })
 
+// Request interceptor: attach Supabase auth token
 http.interceptors.request.use(
   async (config) => {
     try {
@@ -31,17 +32,29 @@ http.interceptors.request.use(
   }
 )
 
-// Add response interceptor for better error handling
+// Response interceptor: unwrap ResponseDto.data
 http.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // If your backend returns { status, message, data: {...} }
+    // Axios wraps that again inside response.data
+    const body = response.data
+
+    // If it's a ResponseDto-like object, flatten it to only return .data
+    if (body && typeof body === 'object' && 'data' in body && 'status' in body) {
+      return {
+        ...body,
+        data: body.data // still keep message, status, etc. but flatten
+      }
+    }
+
+    return body // fallback for other responses
+  },
   (error) => {
     console.error('API Error:', error.message)
     
-    // Check if it's a network error (no response from server)
     if (!error.response) {
       console.error('Backend server is not accessible. Please check if the server is running on:', http.defaults.baseURL)
     } else {
-      // Server responded with an error status
       console.error('Server responded with status:', error.response.status, error.response.data)
     }
     
